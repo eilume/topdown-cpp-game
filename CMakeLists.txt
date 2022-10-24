@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 3.7)
+project(topdown-game)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_definitions(-std=c++17)
+
+set(CXX_FLAGS "-Wall")
+set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
+
+file(GLOB_RECURSE SOURCE_FILES RELATIVE ${PROJECT_SOURCE_DIR} "src/*.cpp")
+file(GLOB_RECURSE HEADER_FILES ${PROJECT_SOURCE_DIR} "src/*.h")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS} src)
+
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} Threads::Threads)
+
+file(REMOVE_RECURSE ${BUILD_OUTPUT_PATH}/levels)
+file(COPY ${PROJECT_SOURCE_DIR}/levels DESTINATION ${PROJECT_SOURCE_DIR}/build)
